@@ -1,5 +1,5 @@
 import numpy as np
-from hybrid_retriever import HybridRetriever
+from retrieval.hybrid_retriever import HybridRetriever
 
 # Test Data 
 

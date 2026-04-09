@@ -1,7 +1,7 @@
 import faiss
 import numpy as np
 from rank_bm25 import BM25Okapi
-from Embedding import EmbeddingModel
+from embedding.Embedding import EmbeddingModel
 
 class HybridRetriever:
     def __init__(self, ef_construction=200, M=32, ef_search=50):

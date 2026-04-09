@@ -1,10 +1,10 @@
-from memory_retriever import MemoryRetriever
-from hybrid_retriever import HybridRetriever
-from memory_store import MemoryStore
-from memory_index import MemoryIndex
-from Embedding import EmbeddingModel
+from memory.memory_retriever import MemoryRetriever
+from retrieval.hybrid_retriever import HybridRetriever
+from memory.memory_store import MemoryStore
+from memory.memory_index import MemoryIndex
+from embedding.Embedding import EmbeddingModel
 from prompt_template import build_prompt       # was missing
-from llm_interface import LocalLLM            # was missing
+from llm.llm_interface import LocalLLM            # was missing
 import time
 from datetime import datetime
 from logs.logger import Logger
@@ -62,6 +62,7 @@ class Router:
 
         memory_result = self.memory_retriever.retrieve(query)
         confidence = memory_result["confidence"]
+        memory_id = memory_result.get("memory_id")
 
         if memory_result["use_memory"]:
             print("Using Memory")
@@ -85,18 +86,41 @@ class Router:
         end_time = time.time()
         latency = end_time - start_time
 
+        sim_q = memory_result.get("sim_query")
+        sim_a = memory_result.get("sim_answer")
+        sim_d = memory_result.get("sim_docs")
+
         # Log data
         self.logger.log(
-            timestamp=str(datetime.now()),
             query=query,
             confidence=confidence,
-            sim_q=memory_result.get("sim_query", 0),
-            sim_a=memory_result.get("sim_answer", 0),
-            sim_d=memory_result.get("sim_docs", 0),
+            memory_id=memory_id,
+            sim_q=sim_q,
+            sim_a=sim_a,
+            sim_d=sim_d,
             source=source,
             latency=latency,
             memory_size=self.memory_store.size(),              # was missing
-            retrieval_count=self.retrieval_count                # was missing
+            retrieval_count=self.retrieval_count,               # was missing
+            memory_count=self.memory_count,
+        )
+
+        # Performance summary (print)
+        def _fmt(x):
+            return "NA" if x is None else f"{float(x):.3f}"
+
+        print(
+            "\n--- run metrics ---\n"
+            f"source         : {source}\n"
+            f"confidence     : {confidence:.3f}\n"
+            f"memory_id      : {memory_id}\n"
+            f"sim_query      : {_fmt(sim_q)}\n"
+            f"sim_answer     : {_fmt(sim_a)}\n"
+            f"sim_docs       : {_fmt(sim_d)}\n"
+            f"latency_s      : {latency:.3f}\n"
+            f"memory_size    : {self.memory_store.size()}\n"
+            f"retrieval_cnt  : {self.retrieval_count}\n"
+            f"memory_cnt     : {self.memory_count}\n"
         )
 
         return answer, confidence

@@ -1,4 +1,4 @@
-from router import Router
+from router.router import Router
 
 documents = [
     "Artificial Intelligence is the simulation of human intelligence.",
@@ -11,7 +11,7 @@ documents = [
     "Large language models are trained on massive text data."
 ]
 
-router = Router()
+router = Router(documents=documents)
 
 # Build hybrid retriever index
 router.hybrid_retriever.build_index(documents)

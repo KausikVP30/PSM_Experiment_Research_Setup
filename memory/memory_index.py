@@ -1,8 +1,8 @@
 import faiss
 import numpy as np
 import os
-from Embedding import EmbeddingModel
-from memory_store import MemoryStore
+from embedding.Embedding import EmbeddingModel
+from memory.memory_store import MemoryStore
 
 class MemoryIndex:
     def __init__(self, index_file='memory_index.faiss'):

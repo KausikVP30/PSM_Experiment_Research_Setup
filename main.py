@@ -1,4 +1,4 @@
-from router import Router
+from router.router import Router
 
 DOCUMENTS = [
     "A linked list is a linear data structure where elements are stored in nodes.",
